@@ -13,6 +13,13 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	<repositories>
+		<repository>
+			<id>GlbalHotKey</id>
+			<name>Repo for globalhotkey</name>
+			<url>http://labs.consol.de/maven/repository/</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>
@@ -99,5 +106,23 @@
 			<artifactId>jersey-media-json-jackson</artifactId>
 			<version>2.20</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.tulskiy</groupId>
+			<artifactId>jkeymaster</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/jxgrabkey/jxgrabkey -->
+		<dependency>
+			<groupId>jxgrabkey</groupId>
+			<artifactId>jxgrabkey</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.0</version>
+		</dependency>
+
 	</dependencies>
 </project>
