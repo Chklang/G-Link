@@ -56,6 +56,16 @@
 						<phase>generate-resources</phase>
 					</execution>
 					<execution>
+						<id>typescript install</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<arguments>run-script typings</arguments>
+						</configuration>
+					</execution>
+					<execution>
 						<id>gulp build</id>
 						<goals>
 							<goal>gulp</goal>
