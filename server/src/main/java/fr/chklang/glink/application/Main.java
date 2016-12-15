@@ -36,6 +36,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
@@ -55,7 +56,7 @@ public class Main extends Application {
 	private int port;
 	private HttpServer server;
 
-	private boolean isShown = true;
+	private boolean isShown = false;
 	private int MY_HOTKEY_INDEX = 1;
 	private Stage stage = null;
 	private HotkeyListener hotkeyListener;
@@ -161,6 +162,8 @@ public class Main extends Application {
 
 		scene = new Scene(browser);
 		scene.setFill(null);
+		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+		stage.setFullScreen(true);
 		stage.setScene(scene);
 		stage.initStyle(StageStyle.TRANSPARENT);
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
