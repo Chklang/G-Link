@@ -9,7 +9,6 @@ import java.util.Collection;
 
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -22,7 +21,6 @@ import org.w3c.dom.Document;
 import com.tulskiy.keymaster.common.HotKey;
 import com.tulskiy.keymaster.common.Provider;
 
-import cz.adamh.utils.NativeUtils;
 import fr.chklang.glink.application.rest.AssetsResource;
 import fr.chklang.glink.application.rest.RestResource;
 import javafx.application.Application;
