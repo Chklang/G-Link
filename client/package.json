@@ -60,7 +60,8 @@
     "serve": "gulp serve",
     "serve:dist": "gulp serve:dist",
     "test": "gulp test",
-    "test:auto": "gulp test:auto"
+    "test:auto": "gulp test:auto",
+    "typings" : "typings install"
   },
   "eslintConfig": {
     "globals": {
