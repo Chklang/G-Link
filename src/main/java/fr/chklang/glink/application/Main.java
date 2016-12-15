@@ -3,18 +3,25 @@ package fr.chklang.glink.application;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.net.URI;
 import java.util.Collection;
 
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.glassfish.grizzly.PortRange;
+import org.glassfish.grizzly.http.server.HttpHandler;
+import org.glassfish.grizzly.http.server.HttpHandlerRegistration;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.grizzly.http.server.ServerConfiguration;
+import org.glassfish.grizzly.websockets.WebSocketAddOn;
+import org.glassfish.grizzly.websockets.WebSocketApplication;
+import org.glassfish.grizzly.websockets.WebSocketEngine;
 import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.process.JerseyProcessingUncaughtExceptionHandler;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.w3c.dom.Document;
 
@@ -22,6 +29,7 @@ import com.tulskiy.keymaster.common.HotKey;
 import com.tulskiy.keymaster.common.Provider;
 
 import fr.chklang.glink.application.rest.AssetsResource;
+import fr.chklang.glink.application.rest.GLinkWebSocketApplication;
 import fr.chklang.glink.application.rest.RestResource;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -33,6 +41,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import jersey.repackaged.com.google.common.util.concurrent.ThreadFactoryBuilder;
 import jxgrabkey.HotkeyConflictException;
 import jxgrabkey.HotkeyListener;
 import jxgrabkey.JXGrabKey;
@@ -194,8 +203,32 @@ public class Main extends Application {
 	private void runServer() throws IOException {
 		ResourceConfig resourceConfig = new ResourceConfig(AssetsResource.class, RestResource.class,
 				MyObjectMapperProvider.class, JacksonFeature.class);
-		server = GrizzlyHttpServerFactory.createHttpServer(URI.create("http://127.0.0.1:0"), resourceConfig, false);
+		
+		server = HttpServer.createSimpleServer(null, new PortRange(10_000, 60_000));
+		NetworkListener lListenerGrizzly = server.getListener("grizzly");
+		lListenerGrizzly.registerAddOn(new WebSocketAddOn());
+		lListenerGrizzly.getTransport().getWorkerThreadPoolConfig().setThreadFactory(new ThreadFactoryBuilder()
+                .setNameFormat("grizzly-http-server-%d")
+                .setUncaughtExceptionHandler(new JerseyProcessingUncaughtExceptionHandler())
+                .build());
+		final WebSocketApplication lApplication = new GLinkWebSocketApplication();
+		WebSocketEngine.getEngine().register("/socket", "/test", lApplication);
+		HttpHandler lHandler = null;
+		try {
+			@SuppressWarnings("unchecked")
+			Class<? extends HttpHandler> lClassHandler = (Class<? extends HttpHandler>) Class.forName("org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpContainer");
+			Constructor<? extends HttpHandler> lConstructor = lClassHandler.getDeclaredConstructor(javax.ws.rs.core.Application.class);
+			lConstructor.setAccessible(true);
+			lHandler = lConstructor.newInstance(resourceConfig);
+		} catch (Exception e) {
+			throw new RuntimeException("Cannot instantiate HTTP server", e);
+		}
+		ServerConfiguration lConf = server.getServerConfiguration();
+		lConf.addHttpHandler(lHandler, HttpHandlerRegistration.builder().contextPath("").build());
+		lConf.setPassTraceRequest(true);
+		
 		server.start();
+
 		Collection<NetworkListener> lListeners = server.getListeners();
 		for (NetworkListener lListener : lListeners) {
 			port = lListener.getPort();
