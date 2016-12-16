@@ -150,6 +150,10 @@ public class Main extends Application {
 	public void start(final Stage stage) throws Exception {
 		this.stage = stage;
 		Platform.setImplicitExit(false);
+		
+		DB.getInstance().getServer().execute(() -> {
+			
+		});
 
 		this.hotkeys();
 

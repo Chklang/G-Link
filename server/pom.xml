@@ -30,6 +30,8 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+
+			<!-- Create Jar with dependencies -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
@@ -51,6 +53,20 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+
+			<!-- Ebean management -->
+			<plugin>
+				<groupId>io.repaint.maven</groupId>
+				<artifactId>tiles-maven-plugin</artifactId>
+				<version>2.8</version>
+				<extensions>true</extensions>
+				<configuration>
+					<tiles>
+						<tile>org.avaje.tile:java-compile:1.1</tile>
+						<tile>org.avaje.ebean.tile:enhancement:1.2</tile>
+					</tiles>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -121,7 +137,36 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.0</version>
 		</dependency>
-		
+
+		<!-- Ebean dependencies -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.193</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.avaje.ebean</groupId>
+			<artifactId>ebean</artifactId>
+			<version>8.4.1</version>
+		</dependency>
+
+		<!-- java annotation processor to generate query beans -->
+		<dependency>
+			<groupId>org.avaje.ebean</groupId>
+			<artifactId>querybean-generator</artifactId>
+			<version>8.1.4</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Optional but Ebean will read these annotations like @size to determine 
+			column lengths etc -->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+		</dependency>
+
 		<!-- Get client part -->
 		<dependency>
 			<groupId>fr.chklang.glink</groupId>
