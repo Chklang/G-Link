@@ -12,6 +12,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fr.chklang.glink.application.DB;
 import fr.chklang.glink.application.WrapperObject;
 import fr.chklang.glink.application.dto.ConfigurationDTO;
@@ -53,7 +55,7 @@ public class RestResource {
 		final List<LinkDTO> lConf = new ArrayList<>();
 		DB.getInstance().getServer().execute(() -> {
 			Link.finder.all().forEach((pLink) -> {
-				lConf.add(new LinkDTO(pLink.getName(), pLink.getDescription(), pLink.getCommand()));
+				lConf.add(new LinkDTO(pLink.getName(), pLink.getDescription(), pLink.getCommand(), pLink.getParameters()));
 			});
 		});
 		return Response.ok(lConf).build();
@@ -66,7 +68,7 @@ public class RestResource {
 			Link lLink = Link.finder.getByName(pLinkName);
 			if (lLink == null) {
 				//Creation
-				lLink = new Link(pLink.command, pLinkName, pLink.description, null);
+				lLink = new Link(pLink.command, pLinkName, pLink.description, null, pLink.parameters);
 				lLink.save();
 			} else {
 				lLink.setCommand(pLink.command);
@@ -104,7 +106,11 @@ public class RestResource {
 		}
 		Link lLink = lWrapper.object;
 		try {
-			Runtime.getRuntime().exec(lLink.getCommand());
+			String lCommand = lLink.getCommand();
+			if (!StringUtils.isEmpty(lLink.getParameters())) {
+				lCommand += " " + lLink.getParameters();
+			}
+			Runtime.getRuntime().exec(lCommand);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Response.status(500).build();

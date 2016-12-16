@@ -11,6 +11,7 @@
             <column name="name" type="varchar(256)" unique="uq_t_link_name"/>
             <column name="description" type="varchar(4096)"/>
             <column name="icon" type="varchar(2048)"/>
+            <column name="parameters" type="varchar(2048)"/>
         </createTable>
     </changeSet>
 </migration>

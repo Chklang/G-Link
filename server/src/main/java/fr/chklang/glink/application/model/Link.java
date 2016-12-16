@@ -7,7 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.avaje.ebean.Finder;
 import com.avaje.ebean.Model;
 
 import fr.chklang.glink.application.dao.LinkDAO;
@@ -16,14 +15,16 @@ import fr.chklang.glink.application.dao.LinkDAO;
 @Table(name="T_LINK")
 public class Link extends Model {
 
+	public static LinkDAO finder = new LinkDAO();
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="idlink")
 	private int idLink;
-
+	
 	@Column(name="command", length=2048)
 	private String command;
-	
+
 	@Column(name="name", unique=true, length=256)
 	private String name;
 
@@ -33,18 +34,20 @@ public class Link extends Model {
 	@Column(name="icon", length=2048)
 	private String icon;
 	
-	public static LinkDAO finder = new LinkDAO();
+	@Column(name="parameters", length=2048)
+	private String parameters;
 
 	public Link() {
 		super();
 	}
 
-	public Link(String command, String name, String description, String icon) {
+	public Link(String command, String name, String description, String icon, String parameters) {
 		super();
 		this.command = command;
 		this.name = name;
 		this.description = description;
 		this.icon = icon;
+		this.parameters = parameters;
 	}
 
 	@Override
@@ -78,6 +81,11 @@ public class Link extends Model {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
+		if (parameters == null) {
+			if (other.parameters != null)
+				return false;
+		} else if (!parameters.equals(other.parameters))
+			return false;
 		return true;
 	}
 
@@ -101,6 +109,10 @@ public class Link extends Model {
 		return name;
 	}
 
+	public String getParameters() {
+		return parameters;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -110,6 +122,7 @@ public class Link extends Model {
 		result = prime * result + ((icon == null) ? 0 : icon.hashCode());
 		result = prime * result + idLink;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
 		return result;
 	}
 
@@ -133,8 +146,12 @@ public class Link extends Model {
 		this.name = name;
 	}
 
+	public void setParameters(String parameters) {
+		this.parameters = parameters;
+	}
+
 	@Override
 	public String toString() {
-		return "Link [idLink=" + idLink + ", command=" + command + ", name=" + name + ", description=" + description + ", icon=" + icon + "]";
+		return "Link [idLink=" + idLink + ", command=" + command + ", name=" + name + ", description=" + description + ", icon=" + icon + ", parameters=" + parameters + "]";
 	}
 }
