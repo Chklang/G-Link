@@ -10,6 +10,8 @@ import javax.persistence.Table;
 import com.avaje.ebean.Finder;
 import com.avaje.ebean.Model;
 
+import fr.chklang.glink.application.dao.LinkDAO;
+
 @Entity
 @Table(name="T_LINK")
 public class Link extends Model {
@@ -31,15 +33,14 @@ public class Link extends Model {
 	@Column(name="icon", length=2048)
 	private String icon;
 	
-	public static Finder<Integer, Link> finder = new Finder<Integer, Link>(Link.class);
+	public static LinkDAO finder = new LinkDAO();
 
 	public Link() {
 		super();
 	}
 
-	public Link(int idLink, String command, String name, String description, String icon) {
+	public Link(String command, String name, String description, String icon) {
 		super();
-		this.idLink = idLink;
 		this.command = command;
 		this.name = name;
 		this.description = description;
