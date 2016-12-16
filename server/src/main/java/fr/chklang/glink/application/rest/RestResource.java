@@ -1,5 +1,6 @@
 package fr.chklang.glink.application.rest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,5 +89,26 @@ public class RestResource {
 			return Response.status(404).build();
 		}
 		return Response.status(204).build();
+	}
+	
+	@Path("/start/{link: .*}")
+	@GET
+	public Response startLink(@PathParam("link") String pLinkName) throws IOException {
+		WrapperObject<Link> lWrapper = new WrapperObject<>();
+		DB.getInstance().getServer().execute(() -> {
+			Link lLink = Link.finder.getByName(pLinkName);
+			lWrapper.object = lLink;
+		});
+		if (lWrapper.object == null) {
+			return Response.status(404).build();
+		}
+		Link lLink = lWrapper.object;
+		try {
+			Runtime.getRuntime().exec(lLink.getCommand());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(500).build();
+		}
+		return Response.ok().build();
 	}
 }
