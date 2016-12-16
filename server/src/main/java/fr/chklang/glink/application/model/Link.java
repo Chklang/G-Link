@@ -8,10 +8,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.avaje.ebean.Finder;
+import com.avaje.ebean.Model;
 
 @Entity
 @Table(name="T_LINK")
-public class Link {
+public class Link extends Model {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)

@@ -6,10 +6,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.avaje.ebean.Finder;
+import com.avaje.ebean.Model;
+
+import fr.chklang.glink.application.dao.ConfigurationDAO;
 
 @Entity
 @Table(name="T_CONFIGURATION")
-public class Configuration {
+public class Configuration extends Model {
 
 	@Id
 	@Column(name="key", length=32)
@@ -18,7 +21,7 @@ public class Configuration {
 	@Column(name="value", length=2048)
 	private String value;
 	
-	public static Finder<String, Configuration> finder = new Finder<String, Configuration>(Configuration.class);
+	public static ConfigurationDAO finder = new ConfigurationDAO();
 
 	public Configuration() {
 		super();
