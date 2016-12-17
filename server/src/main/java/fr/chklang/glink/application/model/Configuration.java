@@ -11,7 +11,7 @@ import com.avaje.ebean.Model;
 import fr.chklang.glink.application.dao.ConfigurationDAO;
 
 @Entity
-@Table(name="T_CONFIGURATION")
+@Table(name="t_configuration")
 public class Configuration extends Model {
 
 	@Id

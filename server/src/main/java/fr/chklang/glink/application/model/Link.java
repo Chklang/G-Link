@@ -12,7 +12,7 @@ import com.avaje.ebean.Model;
 import fr.chklang.glink.application.dao.LinkDAO;
 
 @Entity
-@Table(name="T_LINK")
+@Table(name="t_link")
 public class Link extends Model {
 
 	public static LinkDAO finder = new LinkDAO();

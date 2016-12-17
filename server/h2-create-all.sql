@@ -1,4 +1,3 @@
--- apply changes
 create table t_configuration (
   key                           varchar(32) not null,
   value                         varchar(2048),

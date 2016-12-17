@@ -21,6 +21,7 @@ public class AssetsResource {
 			pFile = "index.html";
 		}
 		String lResource = main + pFile;
+		System.out.println("Get " + lResource);
 		InputStream lStream = Main.class.getResourceAsStream(lResource);
 		if (lStream == null) {
 			return Response.status(404).build();

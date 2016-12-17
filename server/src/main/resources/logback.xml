@@ -1,0 +1,21 @@
+<configuration>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
+			by default -->
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- SQL and bind values -->
+	<logger name="org.avaje.ebean.SQL" level="TRACE" />
+
+	<!-- Transaction Commit and Rollback events -->
+	<logger name="org.avaje.ebean.TXN" level="TRACE" />
+
+	<root level="debug">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>

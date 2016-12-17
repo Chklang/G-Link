@@ -27,13 +27,22 @@ public class RestResource {
 	@Path("/config")
 	@GET
 	public Response getConfig() {
-		final List<ConfigurationDTO> lConf = new ArrayList<>();
-		DB.getInstance().getServer().execute(() -> {
-			Configuration.finder.all().forEach((pConfiguration) -> {
-				lConf.add(new ConfigurationDTO(pConfiguration.getKey(), pConfiguration.getValue()));
+		try {
+			final List<ConfigurationDTO> lConf = new ArrayList<>();
+			System.out.println("Get config");
+			DB.getInstance().getServer().execute(() -> {
+				System.out.println("Connexion OK");
+				Configuration.finder.all().forEach((pConfiguration) -> {
+					System.out.println("Object : " + pConfiguration);
+					lConf.add(new ConfigurationDTO(pConfiguration.getKey(), pConfiguration.getValue()));
+				});
+				System.out.println("Fin connexion");
 			});
-		});
-		return Response.ok(lConf).build();
+			System.out.println("Fin : " + lConf);
+			return Response.ok(lConf).build();
+		} catch (Exception e) {
+			return Response.status(500).entity(e).build();
+		}
 	}
 
 	@Path("/config")

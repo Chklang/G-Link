@@ -28,6 +28,7 @@ import org.w3c.dom.Document;
 import com.tulskiy.keymaster.common.HotKey;
 import com.tulskiy.keymaster.common.Provider;
 
+import fr.chklang.glink.application.model.Configuration;
 import fr.chklang.glink.application.rest.AssetsResource;
 import fr.chklang.glink.application.rest.GLinkWebSocketApplication;
 import fr.chklang.glink.application.rest.RestResource;
@@ -148,12 +149,9 @@ public class Main extends Application {
 
 	@Override
 	public void start(final Stage stage) throws Exception {
+		
 		this.stage = stage;
 		Platform.setImplicitExit(false);
-		
-		DB.getInstance().getServer().execute(() -> {
-			
-		});
 
 		this.hotkeys();
 
@@ -211,7 +209,7 @@ public class Main extends Application {
 		ResourceConfig resourceConfig = new ResourceConfig(AssetsResource.class, RestResource.class,
 				MyObjectMapperProvider.class, JacksonFeature.class);
 		
-		server = HttpServer.createSimpleServer(null, new PortRange(10_000, 60_000));
+		server = HttpServer.createSimpleServer(null, 9000/*new PortRange(10_000, 60_000)*/);
 		NetworkListener lListenerGrizzly = server.getListener("grizzly");
 		lListenerGrizzly.registerAddOn(new WebSocketAddOn());
 		lListenerGrizzly.getTransport().getWorkerThreadPoolConfig().setThreadFactory(new ThreadFactoryBuilder()
