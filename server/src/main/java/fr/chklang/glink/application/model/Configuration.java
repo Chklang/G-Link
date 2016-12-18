@@ -76,8 +76,9 @@ public class Configuration extends Model {
 		this.key = key;
 	}
 
-	public void setValue(String value) {
+	public Configuration setValue(String value) {
 		this.value = value;
+		return this;
 	}
 
 	@Override

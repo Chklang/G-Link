@@ -1,11 +1,14 @@
-interface ILigneConfiguration {
-  key: string;
-  value: string;
+export interface IHotKey {
+  hotkey_ctrl: boolean;
+  hotkey_alt: boolean;
+  hotkey_shift: boolean;
+  hotkey: string;
 }
 
 export interface IConfiguration {
   nbSquaresX: number;
   nbSquaresY: number;
+  hotkey: IHotKey;
 }
 
 export class ConfigurationService {
@@ -18,21 +21,15 @@ export class ConfigurationService {
 
   public getConfiguration(): ng.IPromise<IConfiguration> {
     var lDefer: ng.IDeferred<IConfiguration> = this.$q.defer();
-    this.$http.get('/rest/config').then((pResponse: ng.IHttpPromiseCallbackArg<ILigneConfiguration[]>) => {
-      var lResult: IConfiguration = <any>{};
-      var lConfigList: ILigneConfiguration[] = pResponse.data;
-      lConfigList.forEach((pConfig: ILigneConfiguration) => {
-        switch (pConfig.key) {
-          case 'nbSquaresX':
-            lResult.nbSquaresX = Number(pConfig.value);
-            break;
-          case 'nbSquaresY':
-            lResult.nbSquaresY = Number(pConfig.value);
-            break;
-        }
-      });
-      lDefer.resolve(lResult);
+    this.$http.get('/rest/config').then((pResponse: ng.IHttpPromiseCallbackArg<IConfiguration>) => {
+      lDefer.resolve(pResponse.data);
     }, lDefer.reject);
+    return lDefer.promise;
+  }
+
+  public saveConfiguration(pConfiguration: IConfiguration): ng.IPromise<void> {
+    var lDefer: ng.IDeferred<any> = this.$q.defer();
+    this.$http.post('/rest/config', pConfiguration).then(() => lDefer.resolve(), lDefer.reject);
     return lDefer.promise;
   }
 }

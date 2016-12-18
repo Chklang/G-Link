@@ -1,18 +1,18 @@
 package fr.chklang.glink.application.dto;
 
 public class ConfigurationDTO {
-
-	public String key;
+	public int nbSquaresX;
+	public int nbSquaresY;
+	public HotkeyDTO hotkey;
 	
-	public String value;
-
 	public ConfigurationDTO() {
 		super();
 	}
 
-	public ConfigurationDTO(String key, String value) {
+	public ConfigurationDTO(int nbSquaresX, int nbSquaresY, HotkeyDTO hotkey) {
 		super();
-		this.key = key;
-		this.value = value;
+		this.nbSquaresX = nbSquaresX;
+		this.nbSquaresY = nbSquaresY;
+		this.hotkey = hotkey;
 	}
 }

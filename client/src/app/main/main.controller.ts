@@ -10,6 +10,9 @@ export interface ILinkElement {
   y: number;
   img: string;
   name: string;
+  description: string;
+  command: string;
+  parameters: string;
   type: ElementType;
 
   destinationX: number;
@@ -25,9 +28,8 @@ export class MainController {
 
   private isLoaded: boolean = false;
 
-  private nbSquaresX = 5;
-  private nbSquaresY = 5;
-  private configuration: IConfiguration = null;
+  public configuration: IConfiguration = null;
+
   public modeConfig: boolean = false;
 
   private more_x_x: number = null;
@@ -41,6 +43,12 @@ export class MainController {
 
   private less_y_x: number = null;
   private less_y_y: number = null;
+
+  private save_x: number = null;
+  private save_y: number = null;
+
+  private cancel_x: number = null;
+  private cancel_y: number = null;
 
   /* @ngInject */
   constructor(
@@ -72,38 +80,76 @@ export class MainController {
     } else {
       switch (pLink.type) {
         case ElementType.CONFIG :
-          this.modeConfig = !this.modeConfig;
-          this.calculateProportions();
-          //this.$location.url(pLink.link);
+          if (this.modeConfig) {
+            this.cancel();
+          } else {
+            this.modeConfig = !this.modeConfig;
+            this.calculateProportions();
+            //this.$location.url(pLink.link);
+          }
           break;
       }
     }
   }
 
   public moreX(): void {
-    this.nbSquaresX++;
+    this.configuration.nbSquaresX++;
     this.calculateProportions();
   }
 
   public lessX(): void {
-    if (this.nbSquaresX <= 1) {
+    if (this.configuration.nbSquaresX <= 1) {
       return;
     }
-    this.nbSquaresX--;
+    this.configuration.nbSquaresX--;
     this.calculateProportions();
   }
 
   public moreY(): void {
-    this.nbSquaresY++;
+    this.configuration.nbSquaresY++;
     this.calculateProportions();
   }
 
   public lessY(): void {
-    if (this.nbSquaresY <= 1) {
+    if (this.configuration.nbSquaresY <= 1) {
       return;
     }
-    this.nbSquaresY--;
+    this.configuration.nbSquaresY--;
     this.calculateProportions();
+  }
+
+  public save(): void {
+    var lPromises: ng.IPromise<void>[] = [];
+    lPromises.push(
+      this.Configuration.saveConfiguration(this.configuration)
+    );
+    var lLinksToSave: ILink[] = [];
+    this.links.forEach((pLink: ILinkElement) => {
+      if (pLink.type !== ElementType.LINK) {
+        return;
+      }
+      var lLink: ILink = {
+        name: pLink.name,
+        description: pLink.description,
+        command: pLink.command,
+        parameters: pLink.parameters,
+        squareX: pLink.destinationX,
+        squareY: pLink.destinationY
+      };
+      lLinksToSave.push(lLink);
+    });
+    lPromises.push(
+      this.Link.setLinks(lLinksToSave)
+    );
+    this.$q.all(lPromises).then(() => {
+      this.modeConfig = false;
+      this.calculateProportions();
+    });
+  }
+
+  public cancel(): void {
+    this.isLoaded = false;
+    this.load();
   }
 
   private load(): void {
@@ -111,9 +157,6 @@ export class MainController {
     lPromises.push(
       this.Configuration.getConfiguration().then((pConfiguration: IConfiguration) => {
         this.configuration = pConfiguration;
-
-        this.nbSquaresX = this.configuration.nbSquaresX;
-        this.nbSquaresY = this.configuration.nbSquaresY;
       })
     );
     lPromises.push(
@@ -128,6 +171,9 @@ export class MainController {
               destinationX: pLink.squareX,
               destinationY: pLink.squareY,
               name: pLink.name,
+              description: pLink.description,
+              command: pLink.command,
+              parameters: pLink.parameters,
               type: ElementType.LINK
             });
         });
@@ -141,6 +187,9 @@ export class MainController {
               destinationX: -1,
               destinationY: -1,
               name: null,
+              description: null,
+              command: null,
+              parameters: null,
               type: ElementType.CONFIG
         });
         this.links = lLinks;
@@ -174,6 +223,10 @@ export class MainController {
     this.less_x_x = lScreenWidth / 2 + 8;
     this.more_y_y = lScreenHeight / 2 - 40;
     this.less_y_y = lScreenHeight / 2 + 8;
+    this.save_x = lScreenWidth / 2 - 40;
+    this.save_y = lScreenHeight - 40;
+    this.cancel_x = lScreenWidth / 2 + 8;
+    this.cancel_y = lScreenHeight - 40;
 
     this.more_x_y = 0;
     this.less_x_y = 0;
@@ -181,12 +234,12 @@ export class MainController {
     this.less_y_x = 0;
 
     if (this.modeConfig) {
-      lScreenWidth -= 30;
-      lScreenHeight -= 30;
+      lScreenWidth -= 60;
+      lScreenHeight -= 60;
     }
 
-    this.sizeSquareX = lScreenWidth / this.nbSquaresX;
-    this.sizeSquareY = lScreenHeight / this.nbSquaresY;
+    this.sizeSquareX = lScreenWidth / this.configuration.nbSquaresX;
+    this.sizeSquareY = lScreenHeight / this.configuration.nbSquaresY;
 
     this.centerX = lScreenWidth / 2;
     this.centerY = lScreenHeight / 2;
@@ -194,9 +247,9 @@ export class MainController {
     if (this.modeConfig) {
       //Check squares not occuped to add "ADD" icon on them
       var lSquares: boolean[][] = [];
-      for (var i = 0; i < this.nbSquaresX; i++) {
+      for (var i = 0; i < this.configuration.nbSquaresX; i++) {
         lSquares[i] = [];
-        for (var j = 0; j < this.nbSquaresY; j++) {
+        for (var j = 0; j < this.configuration.nbSquaresY; j++) {
           lSquares[i][j] = false;
         }
       }
@@ -206,11 +259,12 @@ export class MainController {
         var lDestinationY: number = pLink.destinationY;
         if (lDestinationX < 0) {
           //Icon config, go to last square
-          lDestinationX = this.nbSquaresX - 1;
-          lDestinationY = this.nbSquaresY - 1;
+          lDestinationX = this.configuration.nbSquaresX - 1;
+          lDestinationY = this.configuration.nbSquaresY - 1;
         }
-        if (lDestinationX >= 0 && lDestinationX < this.nbSquaresX && lDestinationY >= 0 && lDestinationY < this.nbSquaresY) {
-          if (lDestinationX === (this.nbSquaresX - 1) && lDestinationY === (this.nbSquaresY - 1) && pLink.type !== ElementType.CONFIG) {
+        if (lDestinationX >= 0 && lDestinationX < this.configuration.nbSquaresX &&
+          lDestinationY >= 0 && lDestinationY < this.configuration.nbSquaresY) {
+          if (lDestinationX === (this.configuration.nbSquaresX - 1) && lDestinationY === (this.configuration.nbSquaresY - 1) && pLink.type !== ElementType.CONFIG) {
             return;
           }
           lSquares[lDestinationX][lDestinationY] = true;
@@ -218,8 +272,8 @@ export class MainController {
         }
       });
       this.links = lLinks;
-      for (var i = 0; i < this.nbSquaresX; i++) {
-        for (var j = 0; j < this.nbSquaresY; j++) {
+      for (var i = 0; i < this.configuration.nbSquaresX; i++) {
+        for (var j = 0; j < this.configuration.nbSquaresY; j++) {
           if (lSquares[i][j]) {
             continue;
           }
@@ -228,14 +282,15 @@ export class MainController {
             y: null,
             img: 'images/add.png',
             name: null,
+            description: null,
+            command: null,
+            parameters: null,
             type: ElementType.ADDLINK,
             destinationX: i,
             destinationY: j
           });
         }
       }
-      this.centerX += 30;
-      this.centerY += 30;
     } else {
       var lLinks: ILinkElement[] = [];
       this.links.forEach((pLink: ILinkElement) => {
@@ -244,8 +299,6 @@ export class MainController {
         }
       });
       this.links = lLinks;
-      this.centerX -= 30;
-      this.centerY -= 30;
     }
 
     this.$timeout(this.start, 0);
@@ -269,8 +322,8 @@ export class MainController {
       var lDestinationY: number = pLink.destinationY * this.sizeSquareY;
       if (lDestinationX < 0) {
         //Icon config, go to last square
-        lDestinationX = (this.nbSquaresX - 1) * this.sizeSquareX;
-        lDestinationY = (this.nbSquaresY - 1) * this.sizeSquareY;
+        lDestinationX = (this.configuration.nbSquaresX - 1) * this.sizeSquareX;
+        lDestinationY = (this.configuration.nbSquaresY - 1) * this.sizeSquareY;
       }
       if (this.modeConfig) {
         lDestinationX += 30;

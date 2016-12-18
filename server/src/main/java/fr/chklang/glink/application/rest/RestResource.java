@@ -15,8 +15,10 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.chklang.glink.application.DB;
+import fr.chklang.glink.application.HotKeysUtils;
 import fr.chklang.glink.application.WrapperObject;
 import fr.chklang.glink.application.dto.ConfigurationDTO;
+import fr.chklang.glink.application.dto.HotkeyDTO;
 import fr.chklang.glink.application.dto.LinkDTO;
 import fr.chklang.glink.application.model.Configuration;
 import fr.chklang.glink.application.model.Link;
@@ -28,18 +30,25 @@ public class RestResource {
 	@GET
 	public Response getConfig() {
 		try {
-			final List<ConfigurationDTO> lConf = new ArrayList<>();
-			System.out.println("Get config");
+			final ConfigurationDTO lConfigurationDTO = new ConfigurationDTO();
 			DB.getInstance().getServer().execute(() -> {
-				System.out.println("Connexion OK");
-				Configuration.finder.all().forEach((pConfiguration) -> {
-					System.out.println("Object : " + pConfiguration);
-					lConf.add(new ConfigurationDTO(pConfiguration.getKey(), pConfiguration.getValue()));
-				});
-				System.out.println("Fin connexion");
+				Configuration lConfNbSquaresX = Configuration.finder.byId("nbSquaresX");
+				Configuration lConfNbSquaresY = Configuration.finder.byId("nbSquaresY");
+				Configuration lConfHotkeyCtrl = Configuration.finder.byId("hotkey_ctrl");
+				Configuration lConfHotkeyAlt = Configuration.finder.byId("hotkey_alt");
+				Configuration lConfHotkeyShift = Configuration.finder.byId("hotkey_shift");
+				Configuration lConfHotkey = Configuration.finder.byId("hotkey");
+				
+				lConfigurationDTO.nbSquaresX = Integer.parseInt(lConfNbSquaresX.getValue());
+				lConfigurationDTO.nbSquaresY = Integer.parseInt(lConfNbSquaresY.getValue());
+				HotkeyDTO lHotkeyDTO = new HotkeyDTO();
+				lHotkeyDTO.hotkey_ctrl = Boolean.parseBoolean(lConfHotkeyCtrl.getValue());
+				lHotkeyDTO.hotkey_alt = Boolean.parseBoolean(lConfHotkeyAlt.getValue());
+				lHotkeyDTO.hotkey_shift = Boolean.parseBoolean(lConfHotkeyShift.getValue());
+				lHotkeyDTO.hotkey = lConfHotkey.getValue();
+				lConfigurationDTO.hotkey = lHotkeyDTO;
 			});
-			System.out.println("Fin : " + lConf);
-			return Response.ok(lConf).build();
+			return Response.ok(lConfigurationDTO).build();
 		} catch (Exception e) {
 			return Response.status(500).entity(e).build();
 		}
@@ -47,13 +56,16 @@ public class RestResource {
 
 	@Path("/config")
 	@POST
-	public Response setConfig(final List<ConfigurationDTO> pConf) {
+	public Response setConfig(final ConfigurationDTO pConf) {
 		DB.getInstance().getServer().execute(() -> {
-			Configuration.finder.deleteAll();
-			pConf.forEach((pConfigurationDTO) -> {
-				Configuration lConfiguration = new Configuration(pConfigurationDTO.key, pConfigurationDTO.value);
-				lConfiguration.save();
-			});
+			Configuration.finder.byId("nbSquaresX").setValue(Integer.toString(pConf.nbSquaresX)).update();
+			Configuration.finder.byId("nbSquaresY").setValue(Integer.toString(pConf.nbSquaresY)).update();
+			
+			HotkeyDTO lHotkeyDTO = pConf.hotkey;
+			Configuration.finder.byId("hotkey_ctrl").setValue(Boolean.toString(lHotkeyDTO.hotkey_ctrl)).update();
+			Configuration.finder.byId("hotkey_alt").setValue(Boolean.toString(lHotkeyDTO.hotkey_alt)).update();
+			Configuration.finder.byId("hotkey_shift").setValue(Boolean.toString(lHotkeyDTO.hotkey_shift)).update();
+			Configuration.finder.byId("hotkey").setValue(lHotkeyDTO.hotkey).update();
 		});
 		return Response.status(204).build();
 	}
@@ -68,6 +80,19 @@ public class RestResource {
 			});
 		});
 		return Response.ok(lConf).build();
+	}
+	
+	@Path("/links")
+	@POST
+	public Response setLinks(List<LinkDTO> pLinks) {
+		DB.getInstance().getServer().execute(() -> {
+			Link.finder.deleteAll();
+			pLinks.forEach((pLink) -> {
+				Link lLink = new Link(pLink.command, pLink.name, pLink.description, null, pLink.parameters);
+				lLink.save();
+			});
+		});
+		return Response.status(204).build();
 	}
 	
 	@Path("/links/{link: .*}")
@@ -125,5 +150,16 @@ public class RestResource {
 			return Response.status(500).build();
 		}
 		return Response.ok().build();
+	}
+	
+	@Path("/hotkeys")
+	@POST
+	public Response testHotkey(HotkeyDTO pHotkeyDTO) {
+		boolean lTest = HotKeysUtils.testKeys(pHotkeyDTO);
+		if (lTest) {
+			return Response.ok().build();
+		} else {
+			return Response.status(409).build();
+		}
 	}
 }
