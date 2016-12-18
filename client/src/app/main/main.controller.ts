@@ -1,5 +1,6 @@
 import {ConfigurationService, IConfiguration} from '../../services/configuration';
 import {LinkService, ILink} from '../../services/link';
+import {AddLinkController} from './add-link/add-link.controller';
 
 export enum ElementType {
   LINK, CONFIG, ADDLINK
@@ -58,12 +59,47 @@ export class MainController {
     private $window: ng.IWindowService,
     private $q: ng.IQService,
     private $location: ng.ILocationService,
-    private $scope: ng.IScope
+    private $scope: ng.IScope,
+    private $uibModal: ng.ui.bootstrap.IModalService
   ) {
     this.load();
     angular.element(this.$window).bind('resize', () => {
       this.calculateProportions();
     });
+  }
+
+  public addLink(pLinkElement: ILinkElement) {
+      var options: ng.ui.bootstrap.IModalSettings = {
+        template: require('./add-link/add-link.html'),
+        controller: AddLinkController,
+        controllerAs: 'ctrl',
+        resolve: {
+        }
+      };
+      this.$uibModal.open(options).result.then((pLink: ILink) => {
+        var lLinkElement: ILinkElement = {
+            x: null,
+            y: null,
+            img: "image.png",
+
+            destinationX: pLinkElement.destinationX,
+            destinationY: pLinkElement.destinationY,
+            name: pLink.name,
+            description: pLink.description,
+            command: pLink.command,
+            parameters: pLink.parameters,
+            type: ElementType.LINK
+        };
+        var lLinks: ILinkElement[] = [];
+        this.links.forEach((pLinkActual: ILinkElement) => {
+          if (pLinkActual.destinationX === pLinkElement.destinationX && pLinkActual.destinationY === pLinkElement.destinationY) {
+            return;
+          }
+          lLinks.push(pLinkActual);
+        });
+        lLinks.push(lLinkElement);
+        this.links = lLinks;
+      });
   }
 
   public goto(pLink: ILinkElement) {
@@ -87,6 +123,9 @@ export class MainController {
             this.calculateProportions();
             //this.$location.url(pLink.link);
           }
+          break;
+        case ElementType.ADDLINK :
+          this.addLink(pLink);
           break;
       }
     }
@@ -148,6 +187,7 @@ export class MainController {
   }
 
   public cancel(): void {
+    this.modeConfig = false;
     this.isLoaded = false;
     this.load();
   }

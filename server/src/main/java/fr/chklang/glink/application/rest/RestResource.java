@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fr.chklang.glink.application.App;
 import fr.chklang.glink.application.DB;
 import fr.chklang.glink.application.HotKeysUtils;
 import fr.chklang.glink.application.WrapperObject;
@@ -67,6 +68,7 @@ public class RestResource {
 			Configuration.finder.byId("hotkey_shift").setValue(Boolean.toString(lHotkeyDTO.hotkey_shift)).update();
 			Configuration.finder.byId("hotkey").setValue(lHotkeyDTO.hotkey).update();
 		});
+		App.getInstance().initHotkeys();
 		return Response.status(204).build();
 	}
 	

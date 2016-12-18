@@ -92,9 +92,7 @@ public class App {
 		this.webview = pWebview;
 	}
 	
-	public void shutdown() {
-		server.shutdownNow();
-
+	private void removeHotkeys() {
 		if (providerInitialized) {
 			this.provider.reset();
 			this.provider.stop();
@@ -104,8 +102,13 @@ public class App {
 		if (JXGrabberInitialized) {
 			JXGrabKey.getInstance().removeHotkeyListener(hotkeyListener); // Optional
 			JXGrabKey.getInstance().unregisterHotKey(MY_HOTKEY_INDEX); // Optional
-			JXGrabKey.getInstance().cleanUp();
 		}
+	}
+	
+	public void shutdown() {
+		server.shutdownNow();
+		
+		this.removeHotkeys();
 
 		Platform.exit();
 		System.exit(0);
@@ -140,7 +143,7 @@ public class App {
 				new Configuration("hotkey_shift", "false").save();
 			}
 			if (Configuration.finder.byId("hotkey") == null) {
-				new Configuration("hotkey", "LEFT").save();
+				new Configuration("hotkey", "RIGHT").save();
 			}
 			
 			Configuration.finder.all().forEach((pConf) -> {
@@ -219,6 +222,7 @@ public class App {
 	}
 
 	public void initHotkeys() {
+		this.removeHotkeys();
 		HotkeyDTO lConfKeys = this.getHotkeyConf();
 		if (SystemUtils.IS_OS_LINUX) {
 			this.hotkeysLinux(lConfKeys);
