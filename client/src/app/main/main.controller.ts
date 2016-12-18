@@ -80,6 +80,32 @@ export class MainController {
     }
   }
 
+  public moreX(): void {
+    this.nbSquaresX++;
+    this.calculateProportions();
+  }
+
+  public lessX(): void {
+    if (this.nbSquaresX <= 1) {
+      return;
+    }
+    this.nbSquaresX--;
+    this.calculateProportions();
+  }
+
+  public moreY(): void {
+    this.nbSquaresY++;
+    this.calculateProportions();
+  }
+
+  public lessY(): void {
+    if (this.nbSquaresY <= 1) {
+      return;
+    }
+    this.nbSquaresY--;
+    this.calculateProportions();
+  }
+
   private load(): void {
     var lPromises: ng.IPromise<any>[] = [];
     lPromises.push(
@@ -174,6 +200,7 @@ export class MainController {
           lSquares[i][j] = false;
         }
       }
+      var lLinks: ILinkElement[] = [];
       this.links.forEach((pLink: ILinkElement) => {
         var lDestinationX: number = pLink.destinationX;
         var lDestinationY: number = pLink.destinationY;
@@ -182,8 +209,15 @@ export class MainController {
           lDestinationX = this.nbSquaresX - 1;
           lDestinationY = this.nbSquaresY - 1;
         }
-        lSquares[lDestinationX][lDestinationY] = true;
+        if (lDestinationX >= 0 && lDestinationX < this.nbSquaresX && lDestinationY >= 0 && lDestinationY < this.nbSquaresY) {
+          if (lDestinationX === (this.nbSquaresX - 1) && lDestinationY === (this.nbSquaresY - 1) && pLink.type !== ElementType.CONFIG) {
+            return;
+          }
+          lSquares[lDestinationX][lDestinationY] = true;
+          lLinks.push(pLink);
+        }
       });
+      this.links = lLinks;
       for (var i = 0; i < this.nbSquaresX; i++) {
         for (var j = 0; j < this.nbSquaresY; j++) {
           if (lSquares[i][j]) {
