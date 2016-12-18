@@ -24,6 +24,9 @@ ui-view > * {
 svg > image {
   cursor: pointer;
 }
+.hide {
+  display:none;
+}
 
 .main-container {
   display: flex;

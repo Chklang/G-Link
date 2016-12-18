@@ -1,12 +1,16 @@
 import {ConfigurationService, IConfiguration} from '../../services/configuration';
 import {LinkService, ILink} from '../../services/link';
 
+export enum ElementType {
+  LINK, CONFIG, ADDLINK
+}
+
 export interface ILinkElement {
   x: number;
   y: number;
   img: string;
   name: string;
-  link: string;
+  type: ElementType;
 
   destinationX: number;
   destinationY: number;
@@ -21,9 +25,22 @@ export class MainController {
 
   private isLoaded: boolean = false;
 
-  private nbX = 5;
-  private nbY = 5;
+  private nbSquaresX = 5;
+  private nbSquaresY = 5;
   private configuration: IConfiguration = null;
+  public modeConfig: boolean = false;
+
+  private more_x_x: number = null;
+  private more_x_y: number = null;
+
+  private less_x_x: number = null;
+  private less_x_y: number = null;
+
+  private more_y_x: number = null;
+  private more_y_y: number = null;
+
+  private less_y_x: number = null;
+  private less_y_y: number = null;
 
   /* @ngInject */
   constructor(
@@ -53,7 +70,13 @@ export class MainController {
           squareY: null
       });
     } else {
-      this.$location.url(pLink.link);
+      switch (pLink.type) {
+        case ElementType.CONFIG :
+          this.modeConfig = !this.modeConfig;
+          this.calculateProportions();
+          //this.$location.url(pLink.link);
+          break;
+      }
     }
   }
 
@@ -63,8 +86,8 @@ export class MainController {
       this.Configuration.getConfiguration().then((pConfiguration: IConfiguration) => {
         this.configuration = pConfiguration;
 
-        this.nbX = this.configuration.nbSquaresX;
-        this.nbY = this.configuration.nbSquaresY;
+        this.nbSquaresX = this.configuration.nbSquaresX;
+        this.nbSquaresY = this.configuration.nbSquaresY;
       })
     );
     lPromises.push(
@@ -79,7 +102,7 @@ export class MainController {
               destinationX: pLink.squareX,
               destinationY: pLink.squareY,
               name: pLink.name,
-              link: null
+              type: ElementType.LINK
             });
         });
 
@@ -92,7 +115,7 @@ export class MainController {
               destinationX: -1,
               destinationY: -1,
               name: null,
-              link: '/configuration'
+              type: ElementType.CONFIG
         });
         this.links = lLinks;
       })
@@ -121,11 +144,75 @@ export class MainController {
     var lScreenWidth = lSize.width;
     var lScreenHeight = lSize.height;
 
-    this.sizeSquareX = lScreenWidth / this.nbX;
-    this.sizeSquareY = lScreenHeight / this.nbY;
+    this.more_x_x = lScreenWidth / 2 - 40;
+    this.less_x_x = lScreenWidth / 2 + 8;
+    this.more_y_y = lScreenHeight / 2 - 40;
+    this.less_y_y = lScreenHeight / 2 + 8;
+
+    this.more_x_y = 0;
+    this.less_x_y = 0;
+    this.more_y_x = 0;
+    this.less_y_x = 0;
+
+    if (this.modeConfig) {
+      lScreenWidth -= 30;
+      lScreenHeight -= 30;
+    }
+
+    this.sizeSquareX = lScreenWidth / this.nbSquaresX;
+    this.sizeSquareY = lScreenHeight / this.nbSquaresY;
 
     this.centerX = lScreenWidth / 2;
     this.centerY = lScreenHeight / 2;
+
+    if (this.modeConfig) {
+      //Check squares not occuped to add "ADD" icon on them
+      var lSquares: boolean[][] = [];
+      for (var i = 0; i < this.nbSquaresX; i++) {
+        lSquares[i] = [];
+        for (var j = 0; j < this.nbSquaresY; j++) {
+          lSquares[i][j] = false;
+        }
+      }
+      this.links.forEach((pLink: ILinkElement) => {
+        var lDestinationX: number = pLink.destinationX;
+        var lDestinationY: number = pLink.destinationY;
+        if (lDestinationX < 0) {
+          //Icon config, go to last square
+          lDestinationX = this.nbSquaresX - 1;
+          lDestinationY = this.nbSquaresY - 1;
+        }
+        lSquares[lDestinationX][lDestinationY] = true;
+      });
+      for (var i = 0; i < this.nbSquaresX; i++) {
+        for (var j = 0; j < this.nbSquaresY; j++) {
+          if (lSquares[i][j]) {
+            continue;
+          }
+          this.links.push({
+            x: null,
+            y: null,
+            img: 'images/add.png',
+            name: null,
+            type: ElementType.ADDLINK,
+            destinationX: i,
+            destinationY: j
+          });
+        }
+      }
+      this.centerX += 30;
+      this.centerY += 30;
+    } else {
+      var lLinks: ILinkElement[] = [];
+      this.links.forEach((pLink: ILinkElement) => {
+        if (pLink.type !== ElementType.ADDLINK) {
+          lLinks.push(pLink);
+        }
+      });
+      this.links = lLinks;
+      this.centerX -= 30;
+      this.centerY -= 30;
+    }
 
     this.$timeout(this.start, 0);
   }
@@ -148,8 +235,12 @@ export class MainController {
       var lDestinationY: number = pLink.destinationY * this.sizeSquareY;
       if (lDestinationX < 0) {
         //Icon config, go to last square
-        lDestinationX = (this.nbX - 1) * this.sizeSquareX;
-        lDestinationY = (this.nbY - 1) * this.sizeSquareY;
+        lDestinationX = (this.nbSquaresX - 1) * this.sizeSquareX;
+        lDestinationY = (this.nbSquaresY - 1) * this.sizeSquareY;
+      }
+      if (this.modeConfig) {
+        lDestinationX += 30;
+        lDestinationY += 30;
       }
       var lDistanceX = lDestinationX - this.centerX;
       var lPositionX = (lDistanceX * lPercent) + this.centerX;
