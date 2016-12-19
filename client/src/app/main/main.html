@@ -1,69 +1,13 @@
 <div class="main-container" style="width: 100%; height:100%">
-<svg style="width:100%;height:100%;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink">
-  <!-- More X -->
-  <image
-    xlink:href="images/more.png"
-    ng-attr-x="{{ctrl.more_x_x}}"
-    ng-attr-y="{{ctrl.more_x_y}}"
-    width="32"
-    height="32"
-    ng-class="{'hide': !ctrl.modeConfig}"
-    ng-click="ctrl.moreX()" />
-  <!-- Less X -->
-  <image
-    xlink:href="images/less.png"
-    ng-attr-x="{{ctrl.less_x_x}}"
-    ng-attr-y="{{ctrl.less_x_y}}"
-    width="32"
-    height="32"
-    ng-class="{'hide': !ctrl.modeConfig}"
-    ng-click="ctrl.lessX()" />
-
-  <!-- More Y -->
-  <image
-    xlink:href="images/more.png"
-    ng-attr-x="{{ctrl.more_y_x}}"
-    ng-attr-y="{{ctrl.more_y_y}}"
-    width="32"
-    height="32"
-    ng-class="{'hide': !ctrl.modeConfig}"
-    ng-click="ctrl.moreY()" />
-  <!-- Less Y -->
-  <image
-    xlink:href="images/less.png"
-    ng-attr-x="{{ctrl.less_y_x}}"
-    ng-attr-y="{{ctrl.less_y_y}}"
-    width="32"
-    height="32"
-    ng-class="{'hide': !ctrl.modeConfig}"
-    ng-click="ctrl.lessY()" />
-  <!-- Save -->
-  <image
-    xlink:href="images/save.png"
-    ng-attr-x="{{ctrl.save_x}}"
-    ng-attr-y="{{ctrl.save_y}}"
-    width="32"
-    height="32"
-    ng-class="{'hide': !ctrl.modeConfig}"
-    ng-click="ctrl.save()" />
-  <!-- Cancel -->
-  <image
-    xlink:href="images/cancel.png"
-    ng-attr-x="{{ctrl.cancel_x}}"
-    ng-attr-y="{{ctrl.cancel_y}}"
-    width="32"
-    height="32"
-    ng-class="{'hide': !ctrl.modeConfig}"
-    ng-click="ctrl.cancel()" />
-
-  <!-- Buttons -->
-  <image ng-repeat="link in ctrl.links"
-    xlink:href=""
-    ng-attr-xlink:href="{{link.img}}"
-    ng-attr-x="{{link.x}}"
-    ng-attr-y="{{link.y}}"
-    ng-attr-width="{{ctrl.sizeSquareX}}"
-    ng-attr-height="{{ctrl.sizeSquareY}}"
-    ng-click="ctrl.goto(link)" />
-</svg>
+  <svg style="width:100%;height:100%;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink">
+    <!-- Buttons -->
+    <image ng-repeat="link in ctrl.links"
+      xlink:href=""
+      ng-attr-xlink:href="{{link.img}}"
+      ng-attr-x="{{link.x}}"
+      ng-attr-y="{{link.y}}"
+      ng-attr-width="{{ctrl.sizeSquareX}}"
+      ng-attr-height="{{ctrl.sizeSquareY}}"
+      ng-click="ctrl.goto(link)" />
+  </svg>
 </div>
