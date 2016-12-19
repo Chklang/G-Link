@@ -5,6 +5,7 @@ import * as angular from 'angular';
 
 import 'angular-ui-router';
 import 'angular-ui-bootstrap';
+import 'bootstrap-css';
 import routesConfig from './routes';
 
 import {main} from './app/main/main';

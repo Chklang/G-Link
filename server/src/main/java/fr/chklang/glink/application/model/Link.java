@@ -36,18 +36,27 @@ public class Link extends Model {
 	
 	@Column(name="parameters", length=2048)
 	private String parameters;
+	
+	@Column(name="squarex")
+	private int squareX;
+	
+	@Column(name="squarey")
+	private int squareY;
 
 	public Link() {
 		super();
 	}
 
-	public Link(String command, String name, String description, String icon, String parameters) {
+	public Link(String command, String name, String description, String icon, String parameters, int squareX,
+			int squareY) {
 		super();
 		this.command = command;
 		this.name = name;
 		this.description = description;
 		this.icon = icon;
 		this.parameters = parameters;
+		this.squareX = squareX;
+		this.squareY = squareY;
 	}
 
 	@Override
@@ -86,6 +95,10 @@ public class Link extends Model {
 				return false;
 		} else if (!parameters.equals(other.parameters))
 			return false;
+		if (squareX != other.squareX)
+			return false;
+		if (squareY != other.squareY)
+			return false;
 		return true;
 	}
 
@@ -113,6 +126,14 @@ public class Link extends Model {
 		return parameters;
 	}
 
+	public int getSquareX() {
+		return squareX;
+	}
+
+	public int getSquareY() {
+		return squareY;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -123,6 +144,8 @@ public class Link extends Model {
 		result = prime * result + idLink;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
+		result = prime * result + squareX;
+		result = prime * result + squareY;
 		return result;
 	}
 
@@ -150,8 +173,11 @@ public class Link extends Model {
 		this.parameters = parameters;
 	}
 
-	@Override
-	public String toString() {
-		return "Link [idLink=" + idLink + ", command=" + command + ", name=" + name + ", description=" + description + ", icon=" + icon + ", parameters=" + parameters + "]";
+	public void setSquareX(int squareX) {
+		this.squareX = squareX;
+	}
+
+	public void setSquareY(int squareY) {
+		this.squareY = squareY;
 	}
 }

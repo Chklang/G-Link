@@ -14,7 +14,7 @@ export class AddLinkController {
 
   }
 
-  public ok() {
+  public save() {
     this.$uibModalInstance.close(<ILink>{
       name: this.name,
       description: this.description,

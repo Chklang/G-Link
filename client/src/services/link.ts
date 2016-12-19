@@ -27,7 +27,7 @@ export class LinkService {
 
     public setLinks(pLinks: ILink[]): ng.IPromise<void> {
       var lDefer: ng.IDeferred<any> = this.$q.defer();
-      this.$http.post('/rest/links/', pLinks).then((pResponse: ng.IHttpPromiseCallbackArg<any>) => {
+      this.$http.post('/rest/links', pLinks).then((pResponse: ng.IHttpPromiseCallbackArg<any>) => {
         lDefer.resolve();
       }, lDefer.reject);
       return lDefer.promise;

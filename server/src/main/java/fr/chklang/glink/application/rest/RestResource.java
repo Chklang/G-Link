@@ -78,7 +78,7 @@ public class RestResource {
 		final List<LinkDTO> lConf = new ArrayList<>();
 		DB.getInstance().getServer().execute(() -> {
 			Link.finder.all().forEach((pLink) -> {
-				lConf.add(new LinkDTO(pLink.getName(), pLink.getDescription(), pLink.getCommand(), pLink.getParameters()));
+				lConf.add(new LinkDTO(pLink.getName(), pLink.getDescription(), pLink.getCommand(), pLink.getParameters(), pLink.getSquareX(), pLink.getSquareY()));
 			});
 		});
 		return Response.ok(lConf).build();
@@ -90,7 +90,7 @@ public class RestResource {
 		DB.getInstance().getServer().execute(() -> {
 			Link.finder.deleteAll();
 			pLinks.forEach((pLink) -> {
-				Link lLink = new Link(pLink.command, pLink.name, pLink.description, null, pLink.parameters);
+				Link lLink = new Link(pLink.command, pLink.name, pLink.description, null, pLink.parameters, pLink.squareX, pLink.squareY);
 				lLink.save();
 			});
 		});
@@ -104,7 +104,7 @@ public class RestResource {
 			Link lLink = Link.finder.getByName(pLinkName);
 			if (lLink == null) {
 				//Creation
-				lLink = new Link(pLink.command, pLinkName, pLink.description, null, pLink.parameters);
+				lLink = new Link(pLink.command, pLinkName, pLink.description, null, pLink.parameters, pLink.squareX, pLink.squareY);
 				lLink.save();
 			} else {
 				lLink.setCommand(pLink.command);

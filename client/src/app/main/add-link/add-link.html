@@ -7,7 +7,7 @@
     <div class="form-group">
       <label class="col-md-4 control-label" for="name">Link name</label>
       <div class="col-md-8">
-        <input id="name" type="text" placeholder="Link name" class="form-control input-md" />
+        <input id="name" type="text" placeholder="Link name" class="form-control input-md" ng-model="ctrl.name" />
       </div>
     </div>
 
@@ -15,7 +15,7 @@
     <div class="form-group">
       <label class="col-md-4 control-label" for="program">Program</label>
       <div class="col-md-8">
-        <input id="program" type="text" placeholder="Program to execute" class="form-control input-md" />
+        <input id="program" type="text" placeholder="Program to execute" class="form-control input-md" ng-model="ctrl.command" />
       </div>
     </div>
 
@@ -23,7 +23,7 @@
     <div class="form-group">
       <label class="col-md-4 control-label" for="args">Arguments</label>
       <div class="col-md-8">
-        <input id="args" type="text" placeholder="Arguments" class="form-control input-md" />
+        <input id="args" type="text" placeholder="Arguments" class="form-control input-md" ng-model="ctrl.parameters" />
       </div>
     </div>
 
@@ -31,7 +31,7 @@
     <div class="form-group">
       <label class="col-md-4 control-label" for="details">Details</label>
       <div class="col-md-8">
-        <input id="details" type="text" placeholder="Some details..." class="form-control input-md" />
+        <input id="details" type="text" placeholder="Some details..." class="form-control input-md" ng-model="ctrl.description" />
       </div>
     </div>
 

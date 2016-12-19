@@ -11,6 +11,8 @@ create table t_link (
   description                   varchar(4096),
   icon                          varchar(2048),
   parameters                    varchar(2048),
+  squarex                       integer,
+  squarey                       integer,
   constraint uq_t_link_name unique (name),
   constraint pk_t_link primary key (idlink)
 );
