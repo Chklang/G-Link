@@ -37,12 +37,17 @@ export class MainController {
     private $timeout: ng.ITimeoutService,
     private $window: ng.IWindowService,
     private $q: ng.IQService,
-    private $location: ng.ILocationService
+    private $location: ng.ILocationService,
+    private $scope: ng.IScope
   ) {
     this.load();
-    angular.element(this.$window).bind('resize', () => {
+    var lHandler = () => {
       this.calculateProportions();
+    };
+    this.$scope.$on('$destroy', () => {
+      angular.element(this.$window).unbind('resize', lHandler);
     });
+    angular.element(this.$window).bind('resize', lHandler);
   }
 
   public goto(pLink: ILinkElement) {

@@ -232,9 +232,13 @@ export class ConfigurationController {
         this.calculateButtonsAdd();
         this.isLoaded = true;
         this.init();
-        angular.element(this.$window).bind('resize', () => {
+        var lHandler = () => {
           this.calculateProportions();
+        };
+        this.$scope.$on('$destroy', () => {
+          angular.element(this.$window).unbind('resize', lHandler);
         });
+        angular.element(this.$window).bind('resize', lHandler);
         console.log(this);
       }, (pError) => {
         console.error(pError);
