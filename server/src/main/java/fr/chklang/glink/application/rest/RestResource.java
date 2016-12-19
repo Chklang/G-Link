@@ -1,5 +1,7 @@
 package fr.chklang.glink.application.rest;
 
+import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -142,11 +144,15 @@ public class RestResource {
 		}
 		Link lLink = lWrapper.object;
 		try {
-			String lCommand = lLink.getCommand();
+			//If parameters so start link like a program
 			if (!StringUtils.isEmpty(lLink.getParameters())) {
+				String lCommand = lLink.getCommand();
 				lCommand += " " + lLink.getParameters();
+				Runtime.getRuntime().exec(lCommand);
+			} else {
+				//Else start link like double click
+				Desktop.getDesktop().open(new File(lLink.getCommand()));
 			}
-			Runtime.getRuntime().exec(lCommand);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Response.status(500).build();
