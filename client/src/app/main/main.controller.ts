@@ -90,6 +90,8 @@ export class MainController {
             parameters: pLink.parameters,
             type: ElementType.LINK
         };
+        lLinkElement.x = lLinkElement.destinationX * this.sizeSquareX;
+        lLinkElement.y = lLinkElement.destinationY * this.sizeSquareY;
         var lLinks: ILinkElement[] = [];
         this.links.forEach((pLinkActual: ILinkElement) => {
           if (pLinkActual.destinationX === pLinkElement.destinationX && pLinkActual.destinationY === pLinkElement.destinationY) {
@@ -273,16 +275,16 @@ export class MainController {
     this.more_y_x = 0;
     this.less_y_x = 0;
 
+    this.centerX = lScreenWidth / 2;
+    this.centerY = lScreenHeight / 2;
+
     if (this.modeConfig) {
-      lScreenWidth -= 60;
-      lScreenHeight -= 60;
+      lScreenWidth -= 80;
+      lScreenHeight -= 80;
     }
 
     this.sizeSquareX = lScreenWidth / this.configuration.nbSquaresX;
     this.sizeSquareY = lScreenHeight / this.configuration.nbSquaresY;
-
-    this.centerX = lScreenWidth / 2;
-    this.centerY = lScreenHeight / 2;
 
     if (this.modeConfig) {
       //Check squares not occuped to add "ADD" icon on them
@@ -357,18 +359,24 @@ export class MainController {
     var lDiff: number = lNow - this.startTime;
     var lPercent: number = Math.min(1, lDiff / totalTime);
 
+    //Calculate margins
+    var lMarginLeft: number = this.centerX - (this.configuration.nbSquaresX * this.sizeSquareX) / 2;
+    var lMarginTop: number = this.centerY - (this.configuration.nbSquaresY * this.sizeSquareY) / 2;
+
     this.links.forEach((pLink: ILinkElement) => {
-      var lDestinationX: number = pLink.destinationX * this.sizeSquareX;
-      var lDestinationY: number = pLink.destinationY * this.sizeSquareY;
+      var lDestinationX: number = pLink.destinationX;
+      var lDestinationY: number = pLink.destinationY;
+
       if (lDestinationX < 0) {
         //Icon config, go to last square
-        lDestinationX = (this.configuration.nbSquaresX - 1) * this.sizeSquareX;
-        lDestinationY = (this.configuration.nbSquaresY - 1) * this.sizeSquareY;
+        lDestinationX = this.configuration.nbSquaresX - 1;
+        lDestinationY = this.configuration.nbSquaresY - 1;
       }
-      if (this.modeConfig) {
-        lDestinationX += 30;
-        lDestinationY += 30;
-      }
+      lDestinationX *= this.sizeSquareX;
+      lDestinationY *= this.sizeSquareY;
+      lDestinationX += lMarginLeft;
+      lDestinationY += lMarginTop;
+
       var lDistanceX = lDestinationX - this.centerX;
       var lPositionX = (lDistanceX * lPercent) + this.centerX;
       var lDistanceY = lDestinationY - this.centerY;
