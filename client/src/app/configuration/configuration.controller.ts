@@ -1,6 +1,8 @@
 import {ConfigurationService, IConfiguration} from '../../services/configuration';
 import {LinkService, ILink} from '../../services/link';
 import {AddLinkController} from './add-link/add-link.controller';
+import {EditLinkController, IEditLinkContent} from './edit-link/edit-link.controller';
+import {ConfirmController, IConfirmContent} from './confirm/confirm.controller';
 
 export enum ElementType {
   LINK, CONFIG, ADDLINK
@@ -102,6 +104,61 @@ export class ConfigurationController {
         });
         lLinks.push(lLinkElement);
         this.links = lLinks;
+      });
+  }
+
+  public editLink(pLinkElement: ILinkElement) {
+      var options: ng.ui.bootstrap.IModalSettings = {
+        template: require('./edit-link/edit-link.html'),
+        controller: EditLinkController,
+        controllerAs: 'ctrl',
+        resolve: {
+          content: () : IEditLinkContent => {
+            return {
+              name: pLinkElement.name,
+              description: pLinkElement.description,
+              command: pLinkElement.command,
+              parameters: pLinkElement.parameters
+            }
+          }
+        }
+      };
+      this.$uibModal.open(options).result.then((pLink: ILink) => {
+        pLinkElement.name = pLink.name;
+        pLinkElement.description = pLink.description;
+        pLinkElement.command = pLink.command;
+        pLinkElement.parameters = pLink.parameters;
+      });
+  }
+
+  public removeLink(pLinkElement: ILinkElement): void {
+      var options: ng.ui.bootstrap.IModalSettings = {
+        template: require('./confirm/confirm.html'),
+        controller: ConfirmController,
+        controllerAs: 'ctrl',
+        resolve: {
+          content: () : IConfirmContent => {
+            return {
+              title: 'Remove link',
+              message: 'Are-you sure to want to remove this link?'
+            }
+          }
+        }
+      };
+      this.$uibModal.open(options).result.then((pIsOk: boolean) => {
+        if (pIsOk) {
+          //Remove the link
+          var lLinks: ILinkElement[] = [];
+          this.links.forEach((pLinkActual: ILinkElement) => {
+            if (pLinkActual.destinationX === pLinkElement.destinationX && pLinkActual.destinationY === pLinkElement.destinationY) {
+              return;
+            }
+            lLinks.push(pLinkActual);
+          });
+          this.links = lLinks;
+          this.calculateButtonsAdd();
+          this.calculateProportions();
+        }
       });
   }
 

@@ -67,7 +67,7 @@
     ng-attr-width="32"
     ng-attr-height="32"
     ng-class="{'hide': !link.canRemove}"
-    ng-click="ctrl.goto(link)" />
+    ng-click="ctrl.removeLink(link)" />
 
   <image ng-repeat="link in ctrl.links"
     xlink:href="images/edit.png"
@@ -76,6 +76,6 @@
     ng-attr-width="32"
     ng-attr-height="32"
     ng-class="{'hide': !link.canRemove}"
-    ng-click="ctrl.goto(link)" />
+    ng-click="ctrl.editLink(link)" />
 </svg>
 </div>
