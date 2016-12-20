@@ -38,3 +38,7 @@ svg > image {
   display: flex;
   flex-direction: column;
 }
+explorator {
+  padding-left: 5px;
+  display: block;
+}

@@ -166,7 +166,7 @@ export class ConfigurationController {
     if (pLink.name === null) {
       switch (pLink.type) {
         case ElementType.CONFIG :
-          this.$location.url("/");
+          this.cancel();
           break;
         case ElementType.ADDLINK :
           this.addLink(pLink);
@@ -234,7 +234,22 @@ export class ConfigurationController {
   }
 
   public cancel(): void {
-    this.$location.url("/");
+      var options: ng.ui.bootstrap.IModalSettings = {
+        template: require('./confirm/confirm.html'),
+        controller: ConfirmController,
+        controllerAs: 'ctrl',
+        resolve: {
+          content: () : IConfirmContent => {
+            return {
+              title: 'Cancel modifications',
+              message: 'Are-you sure to want to cancel yours modifications?'
+            }
+          }
+        }
+      };
+      this.$uibModal.open(options).result.then((pIsOk: boolean) => {
+        this.$location.url("/");
+      });
   }
 
   private load(): void {

@@ -14,8 +14,11 @@
     <!-- Text input-->
     <div class="form-group">
       <label class="col-md-4 control-label" for="program">Program</label>
-      <div class="col-md-8">
+      <div class="col-md-6">
         <input id="program" type="text" placeholder="Program to execute" class="form-control input-md" ng-model="ctrl.command" />
+      </div>
+      <div class="col-md-2">
+        <img style="width:32px" src="/images/folder.png" alt="Select file..." ng-click="ctrl.browse()" />
       </div>
     </div>
 

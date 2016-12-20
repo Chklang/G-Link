@@ -12,6 +12,8 @@ import {main} from './app/main/main';
 import {configuration} from './app/configuration/configuration';
 import {ConfigurationService} from './services/configuration';
 import {LinkService} from './services/link';
+import {ExploratorService} from './services/explorator';
+import {ExploratorDirective} from './app/configuration/explorator/explorator.directive';
 
 import './index.css';
 
@@ -21,4 +23,6 @@ angular
   .component('main', main)
   .component('configuration', configuration)
   .service('Configuration', ConfigurationService)
-  .service('Link', LinkService);
+  .service('Link', LinkService)
+  .service('ExploratorService', ExploratorService)
+  .directive('explorator', ExploratorDirective);

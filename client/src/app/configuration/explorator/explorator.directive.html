@@ -1,0 +1,10 @@
+<div ng-bind="::ctrl.file.name"></div>
+<explorator
+  ng-repeat="file in ctrl.file.subElements"
+  ng-model="file"
+  ng-click="ctrl.clickNode(file); $event.stopPropagation();"
+  ng-if="ctrl.file.isOpen"
+  ng-on-select="ctrl.onSelect"></explorator>
+<!--
+<explorator ng-repeat="file in ctrl.subElements" ng-model="file" />
+-->

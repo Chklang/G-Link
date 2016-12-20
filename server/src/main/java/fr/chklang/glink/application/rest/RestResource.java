@@ -160,7 +160,7 @@ public class RestResource {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.status(500).build();
+			return Response.status(500).entity(e.getMessage()).build();
 		}
 		return Response.ok().build();
 	}

@@ -1,4 +1,5 @@
 import {ILink} from '../../../services/link';
+import {ExploratorController} from '../explorator/explorator.controller';
 
 export class AddLinkController {
 
@@ -9,9 +10,22 @@ export class AddLinkController {
 
   /* @ngInject */
   public constructor(
+    private $uibModal: ng.ui.bootstrap.IModalService,
     private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance
   ) {
+  }
 
+  public browse() {
+      var options: ng.ui.bootstrap.IModalSettings = {
+        template: require('../explorator/explorator.html'),
+        controller: ExploratorController,
+        controllerAs: 'ctrl',
+        resolve: {
+        }
+      };
+      this.$uibModal.open(options).result.then((pPath: string) => {
+        this.command = pPath;
+      });
   }
 
   public save() {

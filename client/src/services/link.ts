@@ -10,6 +10,7 @@ export interface ILink {
 
 export class LinkService {
 
+    /* @ngInject */
     public constructor(
       private $http: ng.IHttpService,
       private $q: ng.IQService
