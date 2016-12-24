@@ -4,7 +4,6 @@ import org.avaje.datasource.DataSourceConfig;
 
 import fr.chklang.glink.application.model.Configuration;
 import fr.chklang.glink.application.model.Link;
-import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.EbeanServerFactory;
 import io.ebean.config.ServerConfig;

@@ -12,6 +12,8 @@ export interface IConfiguration {
 }
 
 export class ConfigurationService {
+
+  /* @ngInject */
   public constructor(
     private $http: ng.IHttpService,
     private $q: ng.IQService
