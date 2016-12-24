@@ -16,7 +16,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import org.aopalliance.reflect.ProgramUnit;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import fr.chklang.glink.application.App;
 import fr.chklang.glink.application.DB;
@@ -148,15 +150,19 @@ public class RestResource {
 			return Response.status(404).build();
 		}
 		Link lLink = lWrapper.object;
+		
+		boolean lTryWithDesktopClass = true;
+		if (SystemUtils.IS_OS_LINUX) {
+			lTryWithDesktopClass = false;
+		}
 		try {
-			//If parameters so start link like a program
-			if (!StringUtils.isEmpty(lLink.getParameters())) {
+			if (lTryWithDesktopClass && StringUtils.isEmpty(lLink.getParameters())) {
+				//Start link like double click
+				Desktop.getDesktop().open(new File(lLink.getCommand()));
+			} else {
 				String lCommand = lLink.getCommand();
 				lCommand += " " + lLink.getParameters();
 				Runtime.getRuntime().exec(lCommand);
-			} else {
-				//Else start link like double click
-				Desktop.getDesktop().open(new File(lLink.getCommand()));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
