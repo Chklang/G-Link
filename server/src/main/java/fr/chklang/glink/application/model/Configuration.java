@@ -5,14 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.avaje.ebean.Finder;
-import com.avaje.ebean.Model;
-
 import fr.chklang.glink.application.dao.ConfigurationDAO;
 
 @Entity
 @Table(name="t_configuration")
-public class Configuration extends Model {
+public class Configuration extends AbstractModel {
 
 	@Id
 	@Column(name="key", length=32)

@@ -18,18 +18,13 @@
 			<url>http://labs.consol.de/maven/repository/</url>
 		</repository>
 	</repositories>
+	
+	<properties>
+		<java.version>1.8</java.version>
+	</properties>
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
 
 			<!-- Create Jar with dependencies -->
 			<plugin>
@@ -64,9 +59,25 @@
 				<configuration>
 					<tiles>
 						<tile>org.avaje.tile:java-compile:1.1</tile>
-						<tile>org.avaje.ebean.tile:enhancement:1.2</tile>
+						<tile>io.ebean.tile:enhancement:2.2</tile>
 					</tiles>
 				</configuration>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19.1</version>
+				<executions>
+					<execution>
+						<id>default-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -77,11 +88,6 @@
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.jcraft</groupId>
-			<artifactId>jsch</artifactId>
-			<version>0.1.48</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -146,17 +152,23 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.avaje.ebean</groupId>
+			<groupId>io.ebean</groupId>
 			<artifactId>ebean</artifactId>
-			<version>8.4.1</version>
+			<version>10.1.2</version>
+		</dependency>
+
+		<!-- support for query beans -->
+		<dependency>
+			<groupId>io.ebean</groupId>
+			<artifactId>ebean-querybean</artifactId>
+			<version>10.1.1</version>
 		</dependency>
 
 		<!-- java annotation processor to generate query beans -->
 		<dependency>
-			<groupId>org.avaje.ebean</groupId>
+			<groupId>io.ebean</groupId>
 			<artifactId>querybean-generator</artifactId>
-			<version>8.1.4</version>
-			<scope>provided</scope>
+			<version>10.1.1</version>
 		</dependency>
 
 		<!-- Optional but Ebean will read these annotations like @size to determine 

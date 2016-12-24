@@ -7,13 +7,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.avaje.ebean.Model;
-
 import fr.chklang.glink.application.dao.LinkDAO;
 
 @Entity
 @Table(name="t_link")
-public class Link extends Model {
+public class Link extends AbstractModel {
 
 	public static LinkDAO finder = new LinkDAO();
 

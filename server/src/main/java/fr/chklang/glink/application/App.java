@@ -1,10 +1,8 @@
 package fr.chklang.glink.application;
 
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.util.Collection;
 
 import javax.swing.JOptionPane;
@@ -22,7 +20,6 @@ import org.glassfish.grizzly.websockets.WebSocketEngine;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.process.JerseyProcessingUncaughtExceptionHandler;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.w3c.dom.Document;
 
 import com.tulskiy.keymaster.common.HotKey;
 import com.tulskiy.keymaster.common.Provider;
@@ -32,17 +29,9 @@ import fr.chklang.glink.application.model.Configuration;
 import fr.chklang.glink.application.rest.AssetsResource;
 import fr.chklang.glink.application.rest.GLinkWebSocketApplication;
 import fr.chklang.glink.application.rest.RestResource;
+import io.ebean.EbeanServer;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
 import jersey.repackaged.com.google.common.util.concurrent.ThreadFactoryBuilder;
 import jxgrabkey.HotkeyConflictException;
 import jxgrabkey.HotkeyListener;
@@ -75,6 +64,10 @@ public class App {
 	private GLinkWebView webview;
 	
 	public App() {
+	}
+	
+	public EbeanServer db() {
+		return DB.getInstance().getServer();
 	}
 	
 	public int getPort() {

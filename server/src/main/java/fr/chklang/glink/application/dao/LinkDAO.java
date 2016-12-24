@@ -1,8 +1,7 @@
 package fr.chklang.glink.application.dao;
 
-import com.avaje.ebean.Finder;
-
 import fr.chklang.glink.application.model.Link;
+import io.ebean.Finder;
 
 public class LinkDAO extends Finder<Integer, Link> {
 

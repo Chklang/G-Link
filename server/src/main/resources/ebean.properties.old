@@ -1,0 +1,31 @@
+## load external properties
+#load.properties.override=${user.home}/config/my-application.properties
+
+# the name of the default server
+datasource.default=main
+
+## define these in external properties ...
+
+#ebean.migration.applyPrefix=V
+migration.platform=h2
+#migration.generate=true
+ebean.migration.run=true
+#ebean.ddl.generate=true
+#ebean.ddl.run=true
+
+ebean.main = ["fr.chklang.glink.application.model.*"]
+  
+datasource.main.username=sa
+datasource.main.password=
+datasource.main.databaseUrl=jdbc:h2:file:./db;DB_CLOSE_DELAY=-1
+datasource.main.databaseDriver=org.h2.Driver
+datasource.main.minConnections=1
+datasource.main.maxConnections=25
+datasource.main.heartbeatsql=select 1
+datasource.main.isolationlevel=read_committed
+
+#ebean.docstore.url=http://127.0.0.1:9200
+#ebean.docstore.active=true
+##ebean.docstore.generateMapping=true
+##ebean.docstore.dropCreate=true
+##ebean.docstore.create=true
